@@ -60,27 +60,57 @@ The script should:
 
 ## Using the bundled loader script
 
-This skill includes a reusable Python script for CSV analysis:
+This skill includes a reusable Python script for CSV analysis with multiple output options:
 
 **Location:** `scripts/load_csv.py`
 
-**Usage:**
+**Basic Usage:**
 ```bash
 python3 scripts/load_csv.py <path_to_csv_file>
 ```
 
-**Features:**
-- Automatic data type detection (numeric vs categorical)
-- Missing value and duplicate detection
-- Descriptive statistics for numeric columns
-- Category frequency analysis
-- Pearson correlation coefficients
-- Data quality summary
-
-**Example:**
+**Generate Report File:**
 ```bash
-python3 scripts/load_csv.py data/sales.csv
+python3 scripts/load_csv.py <path_to_csv_file> --report <output_file.md>
 ```
+
+**Features:**
+- ✅ Automatic data type detection (numeric vs categorical)
+- ✅ Missing value and duplicate detection
+- ✅ Descriptive statistics for numeric columns (min, max, mean, median, std dev)
+- ✅ Category frequency analysis (top values per categorical column)
+- ✅ Pearson correlation coefficients for numeric relationships
+- ✅ Data quality assessment and recommendations
+- ✅ Formatted markdown report generation
+- ✅ JSON export support (optional)
+
+**Examples:**
+```bash
+# Print analysis to console
+python3 scripts/load_csv.py data/sales.csv
+
+# Save as markdown report
+python3 scripts/load_csv.py data/sales.csv --report analysis_report.md
+
+# Save as JSON
+python3 scripts/load_csv.py data/sales.csv --json analysis.json
+```
+
+**Output Sections:**
+- Dataset Overview (rows, columns, data types)
+- Data Quality Assessment (missing values, duplicates, outliers)
+- Numeric Statistics (distribution, central tendency, spread)
+- Categorical Analysis (frequency counts, top categories)
+- Correlations (relationships between numeric columns)
+- Recommendations (suggested visualizations, next steps)
+
+## Output Formats
+
+The enhanced script now supports three output modes:
+
+1. **Console Output** (default) — formatted text report with emojis and easy readability
+2. **Markdown Report** — structured markdown file perfect for documentation and sharing
+3. **JSON Export** — machine-readable format for further processing or integration
 
 ## Tips
 
@@ -89,6 +119,8 @@ python3 scripts/load_csv.py data/sales.csv
 - **Suggest next steps** — after showing the analysis, mention if data cleaning, transformation, or deeper analysis would be useful
 - **Make scripts self-contained** — include comments explaining what each section does
 - **Reuse the script** — when analyzing CSVs, run the bundled `load_csv.py` script for consistent results
+- **Automate reports** — use the `--report` flag in pipelines or batch operations to generate markdown documentation automatically
+- **Integrate data** — use JSON export to feed analysis results into downstream systems or dashboards
 
 ## Example trigger
 

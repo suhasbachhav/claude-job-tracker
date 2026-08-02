@@ -1,0 +1,17 @@
+product,category,price,quantity,sales,region,quarter,customer_satisfaction
+Laptop,Electronics,1200.00,45,54000,North,Q1,8.5
+Phone,Electronics,800.00,120,96000,South,Q1,8.2
+Tablet,Electronics,500.00,80,40000,East,Q1,7.9
+Monitor,Electronics,300.00,150,45000,West,Q1,8.1
+Keyboard,Electronics,150.00,200,30000,North,Q2,7.6
+Mouse,Electronics,50.00,500,25000,South,Q2,8.0
+Desk,Furniture,400.00,60,24000,East,Q2,8.3
+Chair,Furniture,250.00,100,25000,West,Q2,7.8
+Lamp,Furniture,80.00,200,16000,North,Q3,8.4
+Bookshelf,Furniture,300.00,50,15000,South,Q3,7.5
+Monitor,Electronics,300.00,160,48000,East,Q3,8.2
+Laptop,Electronics,1200.00,50,60000,West,Q3,8.6
+Phone,Electronics,800.00,110,88000,North,Q4,8.3
+Tablet,Electronics,500.00,90,45000,South,Q4,8.0
+Desk,Furniture,400.00,70,28000,East,Q4,8.4
+Chair,Furniture,250.00,120,30000,West,Q4,8.1

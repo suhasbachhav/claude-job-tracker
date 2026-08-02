@@ -2,15 +2,18 @@
 """
 CSV Data Loader and Analyzer
 Loads CSV files and provides comprehensive data analysis including statistics,
-data types, missing values, and correlations.
+data types, missing values, and correlations. Supports console output and report generation.
 """
 
 import csv
 import sys
+import json
+import argparse
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
 from statistics import mean, median, stdev
 from collections import Counter
+from datetime import datetime
 
 
 class CSVAnalyzer:
@@ -202,8 +205,28 @@ class CSVAnalyzer:
 
         return numerator / (denom_x * denom_y)
 
+    def _get_recommendations(self, summary: Dict[str, Any]) -> List[str]:
+        """Generate actionable recommendations based on analysis."""
+        recommendations = []
+
+        if summary['missing_values']:
+            recommendations.append("❗ Handle missing values through imputation or removal")
+
+        if summary['duplicates'] > 0:
+            recommendations.append("❗ Investigate and remove duplicate rows")
+
+        numeric_cols = [col for col, dtype in self.data_types.items() if dtype == 'numeric']
+        if len(numeric_cols) >= 2:
+            recommendations.append(f"✓ Visualize relationships between {len(numeric_cols)} numeric columns")
+
+        categorical_cols = [col for col, dtype in self.data_types.items() if dtype == 'categorical']
+        if categorical_cols:
+            recommendations.append(f"✓ Create bar charts for {len(categorical_cols)} categorical columns")
+
+        return recommendations
+
     def print_report(self):
-        """Print formatted analysis report."""
+        """Print formatted analysis report to console."""
         if not self.load():
             return
 
@@ -268,18 +291,162 @@ class CSVAnalyzer:
             for (col1, col2), corr in sorted(correlations.items(), key=lambda x: abs(x[1]), reverse=True):
                 print(f"  {col1} ↔ {col2}: {corr:.3f}")
 
+        # Recommendations
+        recommendations = self._get_recommendations(summary)
+        if recommendations:
+            print(f"\n💡 RECOMMENDATIONS")
+            for rec in recommendations:
+                print(f"  {rec}")
+
         print("\n" + "=" * 70)
+
+    def generate_markdown_report(self, output_path: str) -> bool:
+        """Generate a markdown formatted report file."""
+        if not self.load():
+            return False
+
+        self.detect_types()
+        summary = self.get_summary()
+        correlations = self.get_correlations()
+        recommendations = self._get_recommendations(summary)
+
+        report = []
+        report.append("# CSV Analysis Report\n")
+        report.append(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        report.append(f"**File:** `{self.filepath.name}`\n")
+
+        # Overview
+        report.append("\n## Dataset Overview\n")
+        report.append(f"- **Total Rows:** {summary['total_rows']}\n")
+        report.append(f"- **Total Columns:** {summary['total_columns']}\n")
+        report.append(f"- **Columns:** {', '.join(f'`{h}`' for h in self.headers)}\n")
+
+        # Data Types
+        report.append("\n## Data Types\n")
+        report.append("| Column | Type |\n")
+        report.append("|--------|------|\n")
+        for header, dtype in self.data_types.items():
+            report.append(f"| {header} | {dtype} |\n")
+
+        # Data Quality
+        report.append("\n## Data Quality\n")
+        if summary['missing_values']:
+            report.append("### Missing Values\n")
+            for col, count in summary['missing_values'].items():
+                pct = (count / summary['total_rows']) * 100
+                report.append(f"- {col}: {count} ({pct:.1f}%)\n")
+        else:
+            report.append("✅ No missing values detected\n")
+
+        if summary['duplicates'] > 0:
+            pct = (summary['duplicates'] / summary['total_rows']) * 100
+            report.append(f"\n⚠️ **Duplicates:** {summary['duplicates']} ({pct:.1f}%)\n")
+        else:
+            report.append("\n✅ No duplicate rows detected\n")
+
+        # Numeric Statistics
+        if summary['numeric_stats']:
+            report.append("\n## Numeric Statistics\n")
+            for col, stats in summary['numeric_stats'].items():
+                report.append(f"\n### {col}\n")
+                report.append(f"| Metric | Value |\n")
+                report.append(f"|--------|-------|\n")
+                report.append(f"| Count | {stats['count']} |\n")
+                report.append(f"| Min | {stats['min']:.2f} |\n")
+                report.append(f"| Max | {stats['max']:.2f} |\n")
+                report.append(f"| Mean | {stats['mean']:.2f} |\n")
+                report.append(f"| Median | {stats['median']:.2f} |\n")
+                report.append(f"| Std Dev | {stats['std_dev']:.2f} |\n")
+
+        # Categorical Data
+        if summary['categorical_stats']:
+            report.append("\n## Categorical Data\n")
+            for col, categories in summary['categorical_stats'].items():
+                report.append(f"\n### {col}\n")
+                report.append("| Category | Count | Percentage |\n")
+                report.append("|----------|-------|------------|\n")
+                for cat, count in categories[:10]:
+                    pct = (count / summary['total_rows']) * 100
+                    report.append(f"| {cat} | {count} | {pct:.1f}% |\n")
+
+        # Correlations
+        if correlations:
+            report.append("\n## Correlations (Numeric Columns)\n")
+            report.append("| Column 1 | Column 2 | Correlation |\n")
+            report.append("|----------|----------|-------------|\n")
+            for (col1, col2), corr in sorted(correlations.items(), key=lambda x: abs(x[1]), reverse=True):
+                strength = "Strong" if abs(corr) > 0.7 else "Moderate" if abs(corr) > 0.3 else "Weak"
+                report.append(f"| {col1} | {col2} | {corr:.3f} ({strength}) |\n")
+
+        # Recommendations
+        if recommendations:
+            report.append("\n## Recommendations\n")
+            for rec in recommendations:
+                report.append(f"- {rec}\n")
+
+        try:
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.writelines(report)
+            print(f"✅ Report saved to: {output_path}")
+            return True
+        except Exception as e:
+            print(f"❌ Error saving report: {e}")
+            return False
+
+    def export_json(self, output_path: str) -> bool:
+        """Export analysis results as JSON."""
+        if not self.load():
+            return False
+
+        self.detect_types()
+        summary = self.get_summary()
+        correlations = self.get_correlations()
+
+        data = {
+            'file': self.filepath.name,
+            'generated': datetime.now().isoformat(),
+            'summary': summary,
+            'data_types': self.data_types,
+            'correlations': {f"{k[0]} ↔ {k[1]}": v for k, v in correlations.items()},
+        }
+
+        try:
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2)
+            print(f"✅ JSON export saved to: {output_path}")
+            return True
+        except Exception as e:
+            print(f"❌ Error saving JSON: {e}")
+            return False
 
 
 def main():
     """Main entry point."""
-    if len(sys.argv) < 2:
-        print("Usage: python load_csv.py <csv_file_path>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description='CSV Data Analyzer - Generate insights and reports from CSV files'
+    )
+    parser.add_argument('csv_file', help='Path to CSV file to analyze')
+    parser.add_argument(
+        '--report',
+        type=str,
+        help='Generate markdown report and save to specified file'
+    )
+    parser.add_argument(
+        '--json',
+        type=str,
+        help='Export analysis results as JSON'
+    )
 
-    csv_path = sys.argv[1]
-    analyzer = CSVAnalyzer(csv_path)
-    analyzer.print_report()
+    args = parser.parse_args()
+
+    analyzer = CSVAnalyzer(args.csv_file)
+
+    if args.report:
+        analyzer.generate_markdown_report(args.report)
+    elif args.json:
+        analyzer.export_json(args.json)
+    else:
+        analyzer.print_report()
 
 
 if __name__ == '__main__':

@@ -1,0 +1,92 @@
+{
+  "skill_name": "pr-description",
+  "evals": [
+    {
+      "id": 0,
+      "name": "bug-fix-pagination",
+      "prompt": "I fixed a bug in the job filtering where the pagination wasn't working correctly across different filters. I modified the API endpoint to properly handle offset/limit parameters and updated the tests. Can you generate a PR description?",
+      "expected_output": "A structured PR description that explains the pagination bug, what files were changed (API route, test file), testing approach, and why this matters for users. Should include code references.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has-what-section",
+          "description": "Description includes a clear 'What' section summarizing the fix"
+        },
+        {
+          "name": "has-why-section",
+          "description": "Description includes a 'Why' section explaining the bug impact"
+        },
+        {
+          "name": "has-testing-guidance",
+          "description": "Description provides clear testing instructions for reviewers"
+        },
+        {
+          "name": "mentions-files-changed",
+          "description": "Description references specific files that were modified (API endpoint, tests)"
+        },
+        {
+          "name": "explains-user-impact",
+          "description": "Description explains why this bug fix matters to users"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "feature-export-jobs",
+      "prompt": "I added CSV export functionality to the job tracker. Users can now download their jobs as a CSV file. I created a new API endpoint /api/jobs/export, added export utilities, and included tests. Please write a PR description that explains this feature.",
+      "expected_output": "PR description covering: what the feature does, why it's useful (user requested feature), files changed (new endpoint, utilities, tests), how to test it (visit jobs page, click export button), and any relevant notes about CSV formatting or dependencies.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "clear-feature-summary",
+          "description": "Description clearly explains what the CSV export feature does"
+        },
+        {
+          "name": "explains-user-benefit",
+          "description": "Description explains why users would want this feature"
+        },
+        {
+          "name": "lists-new-files",
+          "description": "Description identifies new files created (API endpoint, utilities) vs modified"
+        },
+        {
+          "name": "testing-steps-provided",
+          "description": "Description includes concrete steps to test the export functionality"
+        },
+        {
+          "name": "considers-csv-details",
+          "description": "Description mentions relevant technical details like CSV format or dependencies"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "refactor-auth-middleware",
+      "prompt": "I refactored the authentication middleware to be more modular and support multiple auth strategies. This involved extracting common auth logic into a utility function, updating the auth context to use hooks, and migrating existing code to use the new pattern. Generate a comprehensive PR description.",
+      "expected_output": "PR description that emphasizes the architectural improvement, explains the new structure, lists all affected files (auth context, middleware, components using auth), testing approach (existing tests should pass, verify auth still works), and notes about the migration strategy for this and future auth work.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "explains-architectural-change",
+          "description": "Description explains the architectural improvement and new structure"
+        },
+        {
+          "name": "identifies-scope",
+          "description": "Description makes clear which files are affected by the refactoring"
+        },
+        {
+          "name": "addresses-backward-compatibility",
+          "description": "Description addresses whether existing code still works (migration strategy)"
+        },
+        {
+          "name": "provides-testing-approach",
+          "description": "Description explains how to verify the refactoring didn't break functionality"
+        },
+        {
+          "name": "future-oriented",
+          "description": "Description mentions benefits for future work (e.g., easier to add new auth strategies)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "file": "sample_data.csv",
+  "generated": "2026-08-02T18:53:43.237178",
+  "summary": {
+    "total_rows": 16,
+    "total_columns": 8,
+    "columns": [
+      "product",
+      "category",
+      "price",
+      "quantity",
+      "sales",
+      "region",
+      "quarter",
+      "customer_satisfaction"
+    ],
+    "missing_values": {},
+    "duplicates": 0,
+    "numeric_stats": {
+      "price": {
+        "count": 16,
+        "min": 50.0,
+        "max": 1200.0,
+        "mean": 467.5,
+        "median": 350.0,
+        "std_dev": 356.79125549822544
+      },
+      "quantity": {
+        "count": 16,
+        "min": 45.0,
+        "max": 500.0,
+        "mean": 131.5625,
+        "median": 105.0,
+        "std_dev": 110.17741374710154
+      },
+      "sales": {
+        "count": 16,
+        "min": 15000.0,
+        "max": 96000.0,
+        "mean": 41812.5,
+        "median": 35000.0,
+        "std_dev": 23591.57688667716
+      },
+      "customer_satisfaction": {
+        "count": 16,
+        "min": 7.5,
+        "max": 8.6,
+        "mean": 8.11875,
+        "median": 8.149999999999999,
+        "std_dev": 0.3103089857974898
+      }
+    },
+    "categorical_stats": {
+      "product": [
+        [
+          "Laptop",
+          2
+        ],
+        [
+          "Phone",
+          2
+        ],
+        [
+          "Tablet",
+          2
+        ],
+        [
+          "Monitor",
+          2
+        ],
+        [
+          "Desk",
+          2
+        ],
+        [
+          "Chair",
+          2
+        ],
+        [
+          "Keyboard",
+          1
+        ],
+        [
+          "Mouse",
+          1
+        ],
+        [
+          "Lamp",
+          1
+        ],
+        [
+          "Bookshelf",
+          1
+        ]
+      ],
+      "category": [
+        [
+          "Electronics",
+          10
+        ],
+        [
+          "Furniture",
+          6
+        ]
+      ],
+      "region": [
+        [
+          "North",
+          4
+        ],
+        [
+          "South",
+          4
+        ],
+        [
+          "East",
+          4
+        ],
+        [
+          "West",
+          4
+        ]
+      ],
+      "quarter": [
+        [
+          "Q1",
+          4
+        ],
+        [
+          "Q2",
+          4
+        ],
+        [
+          "Q3",
+          4
+        ],
+        [
+          "Q4",
+          4
+        ]
+      ]
+    }
+  },
+  "data_types": {
+    "product": "categorical",
+    "category": "categorical",
+    "price": "numeric",
+    "quantity": "numeric",
+    "sales": "numeric",
+    "region": "categorical",
+    "quarter": "categorical",
+    "customer_satisfaction": "numeric"
+  },
+  "correlations": {
+    "price \u2194 quantity": -0.5343590139509923,
+    "price \u2194 sales": 0.6947820163046508,
+    "price \u2194 customer_satisfaction": 0.5712838884899747,
+    "quantity \u2194 sales": -0.1989108618019487,
+    "quantity \u2194 customer_satisfaction": -0.1725089796279105,
+    "sales \u2194 customer_satisfaction": 0.3875437791699571
+  }
+}
